@@ -9,7 +9,7 @@
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
 
     <style>
-        body{
+        body {
             background-color: azure;
         }
 
@@ -38,14 +38,23 @@
             width: 300px;
         }
 
-        .card{
+        .searchSection>button:hover {
+            background-color: antiquewhite;
+        }
+
+        .searchSection>button:active {
+            background-color: azure;
+        }
+
+        .card {
             cursor: pointer;
             background-color: peachpuff;
         }
-
     </style>
 
     <script>
+        let url = 'https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1';
+
         // TMDB Open API 
         const options = {
             method: 'GET',
@@ -56,43 +65,60 @@
         };
 
         //데이터 가져와 card 추가하기
-        fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', options)
+        fetch(url, options)
             .then(response => response.json())
             .then(res => {
-                res['results'].forEach(data => {
-                    let m_title = data['original_title'];
-                    let m_overview = data['overview'];
-                    let m_poster_path = data['poster_path'];
-                    let m_vote_average = data['vote_average'];
-                    let m_id = data['id'];
-
-                    let temp_html =
-                        `<div class="col">
-                        <div class="card h-100" onclick="showId(${m_id})">
-                            <img src="https://image.tmdb.org/t/p/original/${m_poster_path}"
-                                    class="card-img-top" alt="...">
-                            <div class="card-body">
-                                <h5 class="card-title">${m_title}</h5>
-                                <p class="card-text">${m_overview}</p>
-                                <p class="card-text">Rating : <span>${m_vote_average}</span></p>
-                            </div>
-                        </div>
-                    </div>`
-                    document.getElementById("card").insertAdjacentHTML("beforeend", temp_html);
-                });
+                fillCards(res['results']);
             })
             .catch(err => console.error(err))
 
+        // 배열 데이터 받아 카드 배치
+        function fillCards(movies) {
+            movies.forEach(data => {
+                let movie = {
+                    title: data['title'],
+                    overview: data['overview'],
+                    poster_path: "https://image.tmdb.org/t/p/original/" + data['poster_path'],
+                    vote_average: data['vote_average'],
+                    id: data['id']
+                };
+
+                let temp_html =
+                    `<div class="col">
+                        <div class="card h-100" onclick="showId(${movie.id})">
+                            <img src=${movie.poster_path}
+                                    class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">${movie.title}</h5>
+                                <p class="card-text">${movie.overview}</p>
+                                <p class="card-text">Rating : <span>${movie.vote_average}</span></p>
+                            </div>
+                        </div>
+                    </div>`
+                document.getElementById("card").insertAdjacentHTML("beforeend", temp_html);
+            });
+        }
+
         //card click 시 id 출력
         function showId(id) {
-            alert("영화 id : "+id);
+            alert("영화 id : " + id);
         }
 
         //search 버튼 click 시
         function search() {
             const input = document.getElementById("searchInput").value.toLowerCase();
-            alert(input);
-            alert(m_id);
+
+            // fetch 다시 가져오기
+            fetch(url, options)
+                .then(response => response.json())
+                .then(res => {
+                    let searchedMovies = res['results'].filter(data =>
+                        data['title'].toLowerCase().includes(input)
+                    )
+                    document.getElementById("card").innerHTML = ``;
+                    fillCards(searchedMovies);
+                })
+                .catch(err => console.error(err))
         }
 
 
