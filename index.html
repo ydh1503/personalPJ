@@ -121,6 +121,10 @@
                 .catch(err => console.error(err))
         }
 
+        function pressEnter(){
+            if(event.keyCode == 13)
+                search();
+        }
 
     </script>
 </head>
@@ -131,7 +135,7 @@
     </div>
     <div class="searchSection">
         <span>영화 검색 : </span>
-        <input id="searchInput" type="text" placeholder="영화 제목을 검색해 보세요" />
+        <input id="searchInput" type="text" onkeypress="pressEnter()" placeholder="영화 제목을 검색해 보세요" autofocus />
         <button id="searchBtn" onclick="search()">검색</button>
     </div>
     <div class="content">
