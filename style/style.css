@@ -1,0 +1,41 @@
+body {
+    background-color: azure;
+}
+
+.title {
+    background-color: yellow;
+
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.searchSection {
+    height: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid grey;
+
+    font-size: large;
+}
+
+.searchSection>input {
+    margin: 0px 10px 0px 10px;
+    width: 300px;
+}
+
+.searchSection>button:hover {
+    background-color: antiquewhite;
+}
+
+.searchSection>button:active {
+    background-color: azure;
+}
+
+.card {
+    cursor: pointer;
+    background-color: peachpuff;
+}
